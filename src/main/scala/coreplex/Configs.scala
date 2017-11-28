@@ -23,10 +23,6 @@ class BaseCoreplexConfig extends Config ((site, here, up) => {
   case SystemBusKey => SystemBusParams(beatBytes = site(XLen)/8, blockBytes = site(CacheBlockBytes))
   case PeripheryBusKey => PeripheryBusParams(beatBytes = site(XLen)/8, blockBytes = site(CacheBlockBytes))
   case MemoryBusKey => MemoryBusParams(beatBytes = site(XLen)/8, blockBytes = site(CacheBlockBytes))
-  // Additional device Parameters
-  case ErrorParams => ErrorParams(Seq(AddressSet(0x3000, 0xfff)))
-  case BootROMParams => BootROMParams(contentFileName = "./bootrom/bootrom.img")
-  case DebugModuleParams => DefaultDebugModuleParams(site(XLen))
 })
 
 /* Composable partial function Configs to set individual parameters */
@@ -50,9 +46,20 @@ class WithNBigCores(n: Int) extends Config((site, here, up) => {
 })
 
 class WithNSmallCores(n: Int) extends Config((site, here, up) => {
+  case XLen => 32
+  case ClintKey => ClintParams(baseAddress = x"D000_0000")
+  case PLICKey => PLICParams(baseAddress = x"E000_0000")
   case RocketTilesKey => {
     val small = RocketTileParams(
-      core = RocketCoreParams(useVM = false, fpu = None),
+      core = RocketCoreParams(
+        useAtomics = false,
+        nBreakpoints =0,
+        nPMPs = 0,
+        useCompressed = false,
+        mulDiv = Some(MulDivParams(mulUnroll = 8)),
+        useVM = false,
+        //useDebug = false,
+        fpu = None),
       btb = None,
       dcache = Some(DCacheParams(
         rowBits = site(SystemBusKey).beatBits,
@@ -72,7 +79,9 @@ class WithNSmallCores(n: Int) extends Config((site, here, up) => {
 })
 
 class With1TinyCore extends Config((site, here, up) => {
-  case XLen => 32
+  //case XLen => 32
+  //case PLICKey => PLICParams(baseAddress = x"1000_0000")
+  //case ClintKey => ClintParams(baseAddress = x"2000_0000")
   case RocketTilesKey => List(RocketTileParams(
       core = RocketCoreParams(
         useVM = false,

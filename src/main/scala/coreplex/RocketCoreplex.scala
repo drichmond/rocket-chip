@@ -64,7 +64,7 @@ trait HasRocketTiles extends HasTiles
     with HasPeripheryBus
     with HasPeripheryPLIC
     with HasPeripheryClint
-    with HasPeripheryDebug {
+    /*with HasPeripheryDebug*/ {
   val module: HasRocketTilesModuleImp
 
   protected val tileParams = p(RocketTilesKey)
@@ -109,7 +109,7 @@ trait HasRocketTiles extends HasTiles
     // NOTE: The order of calls to := matters! They must match how interrupts
     //       are decoded from rocket.intNode inside the tile.
 
-    wrapper.intXbar.intnode := wrapper { IntSyncCrossingSink(3) } := debug.intnode // 1. always async crossign
+    // wrapper.intXbar.intnode := wrapper { IntSyncCrossingSink(3) } := debug.intnode // 1. always async crossign
 
     // 2. clint+plic conditionak crossing
     val periphIntNode = SourceCardinality { implicit p => wrapper.intXbar.intnode :=? wrapper.crossIntIn }
@@ -131,7 +131,7 @@ trait HasRocketTiles extends HasTiles
 }
 
 trait HasRocketTilesModuleImp extends HasTilesModuleImp
-    with HasPeripheryDebugModuleImp {
+    /*with HasPeripheryDebugModuleImp*/ {
   val outer: HasRocketTiles
 }
 

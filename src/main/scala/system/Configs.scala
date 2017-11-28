@@ -15,18 +15,18 @@ class BaseConfig extends Config(new BaseCoreplexConfig().alter((site,here,up) =>
   case DTSCompat => Nil
   case DTSTimebase => BigInt(1000000) // 1 MHz
   // External port parameters
-  case NExtTopInterrupts => 2
+  case NExtTopInterrupts => 0
   case ExtMem => MasterPortParams(
-                      base = x"8000_0000",
-                      size = x"1000_0000",
+                      base = x"0000_0000",
+                      size = x"8000_0000",
                       beatBytes = site(MemoryBusKey).beatBytes,
                       idBits = 4)
   case ExtBus => MasterPortParams(
-                      base = x"6000_0000",
-                      size = x"2000_0000",
+                      base = x"8000_0000",
+                      size = x"4000_0000",
                       beatBytes = site(MemoryBusKey).beatBytes,
-                      idBits = 4)
-  case ExtIn  => SlavePortParams(beatBytes = 8, idBits = 8, sourceBits = 4)
+    idBits = 4)
+  //case ExtIn  => SlavePortParams(beatBytes = 8, idBits = 8, sourceBits = 4)
 }))
 
 class DefaultConfig extends Config(new WithNBigCores(1) ++ new BaseConfig)
@@ -72,4 +72,4 @@ class TinyConfig extends Config(
 class BaseFPGAConfig extends Config(new BaseConfig)
 
 class DefaultFPGAConfig extends Config(new WithNSmallCores(1) ++ new BaseFPGAConfig)
-class DefaultFPGASmallConfig extends Config(new DefaultFPGAConfig)
+class DefaultFPGASmallConfig extends Config(new WithNSmallCores(1) ++ new BaseFPGAConfig)
