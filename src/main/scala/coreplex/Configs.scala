@@ -56,24 +56,35 @@ class WithNSmallCores(n: Int) extends Config((site, here, up) => {
         nBreakpoints =0,
         nPMPs = 0,
         useCompressed = false,
-        mulDiv = Some(MulDivParams(mulUnroll = 8)),
+        mulDiv = Some(MulDivParams(mulUnroll = 4)),
         useVM = false,
         //useDebug = false,
         fpu = None),
-      btb = None,
+      btb = Some(BTBParams(
+        nEntries = 0,
+        nMatchBits = 0,
+        nPages = 1,
+        nRAS = 0,
+        bhtParams = Some(BHTParams(
+          nEntries = 32,
+          counterLength = 2,
+          historyLength = 0,
+          historyBits = 0)
+        )
+      )),
       dcache = Some(DCacheParams(
         rowBits = site(SystemBusKey).beatBits,
-        nSets = 64,
+        nSets = 16,
         nWays = 1,
         nTLBEntries = 4,
         nMSHRs = 0,
-        blockBytes = site(CacheBlockBytes))),
+        blockBytes = 128)),
       icache = Some(ICacheParams(
         rowBits = site(SystemBusKey).beatBits,
-        nSets = 64,
+        nSets = 16,
         nWays = 1,
         nTLBEntries = 4,
-        blockBytes = site(CacheBlockBytes))))
+        blockBytes = 128)))
     List.tabulate(n)(i => small.copy(hartid = i))
   }
 })
