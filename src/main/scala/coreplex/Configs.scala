@@ -45,6 +45,82 @@ class WithNBigCores(n: Int) extends Config((site, here, up) => {
   }
 })
 
+class WithNSmallPYNQCores(n: Int) extends Config((site, here, up) => {
+  case XLen => 32
+  case ClintKey => ClintParams(baseAddress = x"D000_0000")
+  case PLICKey => PLICParams(baseAddress = x"E000_0000")
+  case RocketTilesKey => {
+    val small = RocketTileParams(
+      core = RocketCoreParams(
+        useAtomics = false,
+        nBreakpoints =0,
+        nPMPs = 0,
+        useCompressed = false,
+        mulDiv = Some(MulDivParams(mulUnroll = 4)),
+        useVM = false,
+        //useDebug = false,
+        fpu = None),
+      btb = None,
+      dcache = Some(DCacheParams(
+        rowBits = site(SystemBusKey).beatBits,
+        nSets = 128,
+        nWays = 1,
+        nTLBEntries = 4,
+        nMSHRs = 0,
+        blockBytes = 128)),
+      icache = Some(ICacheParams(
+        rowBits = site(SystemBusKey).beatBits,
+        nSets = 128,
+        nWays = 1,
+        nTLBEntries = 4,
+        blockBytes = 128)))
+    List.tabulate(n)(i => small.copy(hartid = i))
+  }
+})
+
+class WithNSmallPYNQBpCores(n: Int) extends Config((site, here, up) => {
+  case XLen => 32
+  case ClintKey => ClintParams(baseAddress = x"D000_0000")
+  case PLICKey => PLICParams(baseAddress = x"E000_0000")
+  case RocketTilesKey => {
+    val small = RocketTileParams(
+      core = RocketCoreParams(
+        useAtomics = false,
+        nBreakpoints =0,
+        nPMPs = 0,
+        useCompressed = false,
+        mulDiv = Some(MulDivParams(mulUnroll = 4)),
+        useVM = false,
+        //useDebug = false,
+        fpu = None),
+      btb = Some(BTBParams(
+        nEntries = 8,
+        nPages = 1,
+        nRAS = 16,
+        bhtParams = Some(BHTParams(
+          nEntries = 32,
+          counterLength = 2,
+          historyLength = 5,
+          historyBits = 5)
+        )
+      )),
+      dcache = Some(DCacheParams(
+        rowBits = site(SystemBusKey).beatBits,
+        nSets = 128,
+        nWays = 1,
+        nTLBEntries = 4,
+        nMSHRs = 0,
+        blockBytes = 128)),
+      icache = Some(ICacheParams(
+        rowBits = site(SystemBusKey).beatBits,
+        nSets = 128,
+        nWays = 1,
+        nTLBEntries = 4,
+        blockBytes = 128)))
+    List.tabulate(n)(i => small.copy(hartid = i))
+  }
+})
+
 class WithNSmallCores(n: Int) extends Config((site, here, up) => {
   case XLen => 32
   case ClintKey => ClintParams(baseAddress = x"D000_0000")
