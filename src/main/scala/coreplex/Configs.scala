@@ -63,17 +63,17 @@ class WithNSmallPYNQCores(n: Int) extends Config((site, here, up) => {
       btb = None,
       dcache = Some(DCacheParams(
         rowBits = site(SystemBusKey).beatBits,
-        nSets = 128,
+        nSets = 512,
         nWays = 1,
         nTLBEntries = 4,
         nMSHRs = 0,
-        blockBytes = 128)),
+        blockBytes = 8)),
       icache = Some(ICacheParams(
         rowBits = site(SystemBusKey).beatBits,
-        nSets = 128,
+        nSets = 512,
         nWays = 1,
         nTLBEntries = 4,
-        blockBytes = 128)))
+        blockBytes = 8)))
     List.tabulate(n)(i => small.copy(hartid = i))
   }
 })
@@ -98,25 +98,25 @@ class WithNSmallPYNQBpCores(n: Int) extends Config((site, here, up) => {
         nPages = 1,
         nRAS = 16,
         bhtParams = Some(BHTParams(
-          nEntries = 32,
+          nEntries = 64,
           counterLength = 2,
-          historyLength = 5,
-          historyBits = 5)
+          historyLength = 6,
+          historyBits = 6)
         )
       )),
       dcache = Some(DCacheParams(
         rowBits = site(SystemBusKey).beatBits,
-        nSets = 128,
+        nSets = 512,
         nWays = 1,
         nTLBEntries = 4,
         nMSHRs = 0,
-        blockBytes = 128)),
+        blockBytes = 8)),
       icache = Some(ICacheParams(
         rowBits = site(SystemBusKey).beatBits,
-        nSets = 128,
+        nSets = 512,
         nWays = 1,
         nTLBEntries = 4,
-        blockBytes = 128)))
+        blockBytes = 8)))
     List.tabulate(n)(i => small.copy(hartid = i))
   }
 })
